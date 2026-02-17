@@ -1,0 +1,66 @@
+#include "Server.h"
+#include "Server.h"
+#include <iostream>
+
+void Server::initialize() {
+	WSADATA wsa_data;
+	if (WSAStartup(MAKEWORD(2, 2), &wsa_data) != 0) {
+		std::cerr << "WSAStartup failed" << std::endl;
+		return;
+	}
+}
+
+void Server::createSocket() {
+	server_socket = socket(AF_INET, SOCK_STREAM, 0);
+	if (server_socket == INVALID_SOCKET) {
+		std::cerr << "Error creating socket: " << WSAGetLastError() << std::endl;
+		WSACleanup();
+		return;
+	}
+	server_addr.sin_family = AF_INET;
+	server_addr.sin_addr.s_addr = INADDR_ANY;
+	server_addr.sin_port = htons(port);
+}
+
+void Server::bindSocket() {
+	if (bind(server_socket, reinterpret_cast<sockaddr*>(&server_addr), sizeof(server_addr))) {
+		std::cerr << "Bind failed with error: " << WSAGetLastError() << std::endl;
+		closesocket(server_socket);
+		WSACleanup();
+		return;
+	}
+}
+
+void Server::startListening() {
+	if (listen(server_socket, SOMAXCONN) == SOCKET_ERROR) {
+		std::cerr << "Listen failed with error: " << WSAGetLastError() << std::endl;
+		closesocket(server_socket);
+		WSACleanup();
+		return;
+	}
+	std::cout << "Server is listening on a port: " << port << std::endl;
+}
+
+void Server::acceptConnection() {
+	client_socket = accept(server_socket, nullptr, nullptr);
+	if (client_socket == SOCKET_ERROR) {
+		std::cerr << "Accept failed with error: " << WSAGetLastError() << std::endl;
+		closesocket(server_socket);
+		WSACleanup();
+		return;
+	}
+}
+
+void Server::processRequest() {
+	//buffer
+	//recv
+	//requestParser.parse(buffer)
+	//should buffer be bigger than request or i can read the request in parts?
+}
+
+void Server::cleanUp() {
+	closesocket(server_socket);
+	closesocket(client_socket);
+	WSACleanup();
+}
+
