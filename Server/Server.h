@@ -23,6 +23,8 @@ private:
 	void acceptConnection();
 	void processRequest();
 	void cleanUp();
+
+	bool recvAll(char* buffer, int size);
 public:
 	void run();
 };
