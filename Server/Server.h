@@ -13,11 +13,9 @@ private:
 	SOCKET client_socket;
 
 	RequestParser request_parser;
-	//ClientSession (???)
 	//CommandHandler
 	//ResponseBuilder
 	//main or some class for client-server app
-public:
 	void initialize();
 	void createSocket();
 	void bindSocket();
@@ -25,6 +23,8 @@ public:
 	void acceptConnection();
 	void processRequest();
 	void cleanUp();
+public:
+	void run();
 };
 
 
