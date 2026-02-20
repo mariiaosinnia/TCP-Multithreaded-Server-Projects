@@ -35,7 +35,7 @@ void CommandHandler::sendStatus(SOCKET socket, Status status_enum){
 }
 
 void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
-	std::ifstream file(file_name, std::ios::binary);
+	std::ifstream file(file_directory + "/" + file_name, std::ios::binary);
 
 	if (!file.is_open()) {
 		Status status = Status::FILE_NOT_FOUND;
