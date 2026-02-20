@@ -16,6 +16,17 @@ bool CommandHandler::sendAll(SOCKET socket, char* data, int size){
 	}
 	return true;
 }
+bool CommandHandler::recvAll(SOCKET socket, char* buffer, int size) {
+	int total_received = 0;
+	while (total_received < size) {
+		int bytes_received = recv(socket, buffer + total_received, size - total_received, 0);
+		if (bytes_received <= 0) {
+			return false;
+		}
+		total_received += bytes_received;
+	}
+	return true;
+}
 
 void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
 	std::ifstream file(file_name, std::ios::binary);
