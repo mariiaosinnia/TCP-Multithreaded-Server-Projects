@@ -21,12 +21,21 @@
     <ClInclude Include="RequestParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="Protocol.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="CommandHandler.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Server.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="RequestParser.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="CommandHandler.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>
