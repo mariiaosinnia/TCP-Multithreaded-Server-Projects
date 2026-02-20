@@ -1,5 +1,4 @@
 #include "CommandHandler.h"
-#include "Protocol.h"
 #include <fstream>
 #include <filesystem>
 #include <vector>
@@ -27,6 +26,11 @@ bool CommandHandler::recvAll(SOCKET socket, char* buffer, int size) {
 		total_received += bytes_received;
 	}
 	return true;
+}
+
+void CommandHandler::sendStatus(SOCKET socket, Status status_enum){
+	uint8_t status = static_cast<uint8_t>(status_enum);
+	send(socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
 }
 
 void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
