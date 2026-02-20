@@ -76,7 +76,7 @@ void CommandHandler::handleList(SOCKET client_socket){
 		}
 	}
 	catch (...) {
-		uint8_t status = 1;
+		uint8_t status = 3;
 		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
 		return;
 	}
