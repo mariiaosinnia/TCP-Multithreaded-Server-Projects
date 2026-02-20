@@ -105,6 +105,7 @@ void CommandHandler::handlePut(SOCKET client_socket, std::string& file_name, uin
 	if (!file.is_open()) {
 		Status status = Status::FILE_NOT_FOUND;
 		sendStatus(client_socket, status);
+		return;
 	}
 	const size_t CHUNK_SIZE = 1024;
 	std::vector<char> buffer(CHUNK_SIZE);
@@ -146,6 +147,7 @@ void CommandHandler::handleInfo(SOCKET client_socket, std::string& file_name){
 	if (!std::filesystem::exists(file_path) || !std::filesystem::is_regular_file(file_path)) {
 		Status status = Status::FILE_NOT_FOUND;
 		sendStatus(client_socket, status);
+		return;
 	}
 	Status status = Status::SUCCESS;
 	sendStatus(client_socket, status);
