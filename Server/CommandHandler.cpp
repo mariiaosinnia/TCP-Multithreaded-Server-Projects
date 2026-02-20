@@ -157,3 +157,8 @@ void CommandHandler::handleInfo(SOCKET client_socket, std::string& file_name){
 
 	sendAll(client_socket, reinterpret_cast<char*>(&net_file_size), sizeof(net_file_size));
 }
+
+void CommandHandler::handleInvalid(SOCKET client_socket){
+	Status status = Status::INVALID_REQUEST;
+	sendStatus(client_socket, status);
+}
