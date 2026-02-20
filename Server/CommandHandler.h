@@ -4,7 +4,7 @@
 
 class CommandHandler{
 private:
-	void sendAll(SOCKET socket, char* data, int size);
+	bool sendAll(SOCKET socket, char* data, int size);
 public:
 	void handleGet(SOCKET client_socket, std::string& file_name);
 	void handleList(SOCKET client_socket);

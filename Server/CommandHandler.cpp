@@ -5,15 +5,16 @@
 #include <vector>
 #include <string>
 
-void CommandHandler::sendAll(SOCKET socket, char* data, int size){
+bool CommandHandler::sendAll(SOCKET socket, char* data, int size){
 	int total_sent = 0;
 	while (total_sent < size) {
 		int sent = send(socket, data + total_sent, size - total_sent, 0);
 		if (sent <= 0){
-			return;
+			return false;
 		}
 		total_sent += sent;
 	}
+	return true;
 }
 
 void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
@@ -32,7 +33,9 @@ void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
 	file.seekg(0, std::ios::beg);
 
 	uint32_t net_file_size = htonl(file_size);
-	sendAll(client_socket, reinterpret_cast<char*>(&net_file_size), sizeof(net_file_size));
+	if (!sendAll(client_socket, reinterpret_cast<char*>(&net_file_size), sizeof(net_file_size))) {
+		return;
+	}
 
 	const size_t CHUNK_SIZE = 1024;
 	std::vector<char> buffer(CHUNK_SIZE);
@@ -42,8 +45,10 @@ void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
 		std::streamsize bytes_read = file.gcount();
 
 		if (bytes_read > 0) {
-			sendAll(client_socket, buffer.data(), bytes_read);
+			if (!sendAll(client_socket, buffer.data(), bytes_read)) {
+				return;
 		}
+	}
 	}
 	file.close();
 }
@@ -69,7 +74,14 @@ void CommandHandler::handleList(SOCKET client_socket){
 
 	uint32_t payload_size = static_cast<uint32_t>(result.length());
 	uint32_t net_payload_size = htonl(payload_size);
-	sendAll(client_socket, reinterpret_cast<char*>(&net_payload_size), PAYLOAD_LENGTH_BYTES);
+	if (!sendAll(client_socket, reinterpret_cast<char*>(&net_payload_size), PAYLOAD_LENGTH_BYTES)) {
+		return;
+	}
+
+	if (!sendAll(client_socket, result.data(), payload_size)) {
+		return;
+	}
+}
 
 	sendAll(client_socket, result.data(), payload_size);
 }
