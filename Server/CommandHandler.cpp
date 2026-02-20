@@ -16,6 +16,7 @@ bool CommandHandler::sendAll(SOCKET socket, char* data, int size){
 	}
 	return true;
 }
+
 bool CommandHandler::recvAll(SOCKET socket, char* buffer, int size) {
 	int total_received = 0;
 	while (total_received < size) {
@@ -147,7 +148,7 @@ void CommandHandler::handleInfo(SOCKET client_socket, std::string& file_name){
 		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
 	}
 	uint8_t status = static_cast<uint8_t>(Status::SUCCESS);
-	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES);
+	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
 
 	uint32_t file_size = static_cast<uint32_t>(std::filesystem::file_size(file_path));
 	uint32_t net_file_size = htonl(file_size);
