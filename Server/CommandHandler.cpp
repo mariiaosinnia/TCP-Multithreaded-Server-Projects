@@ -4,6 +4,7 @@
 #include <filesystem>
 #include <vector>
 #include <string>
+#include <algorithm>
 
 bool CommandHandler::sendAll(SOCKET socket, char* data, int size){
 	int total_sent = 0;
@@ -58,8 +59,8 @@ void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
 		if (bytes_read > 0) {
 			if (!sendAll(client_socket, buffer.data(), bytes_read)) {
 				return;
+			}
 		}
-	}
 	}
 	file.close();
 }
@@ -67,7 +68,7 @@ void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
 void CommandHandler::handleList(SOCKET client_socket){
 	std::string result;
 	try {
-		for (const auto& entry : std::filesystem::directory_iterator("server_files")) {
+		for (const auto& entry : std::filesystem::directory_iterator(file_directory)) {
 			if (entry.is_regular_file()) {
 				result += entry.path().filename().string();
 				result += "\n";
@@ -94,5 +95,25 @@ void CommandHandler::handleList(SOCKET client_socket){
 	}
 }
 
-	sendAll(client_socket, result.data(), payload_size);
+void CommandHandler::handlePut(SOCKET client_socket, std::string& file_name, uint32_t file_size) {
+	std::ofstream file(file_directory + "/" + file_name, std::ios::binary);
+	if (!file.is_open()) {
+		uint8_t status = 1;
+		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+	}
+	const size_t CHUNK_SIZE = 1024;
+	std::vector<char> buffer(CHUNK_SIZE);
+
+	int total_received = 0;
+	while (total_received < file_size) {
+		uint32_t bytes_to_read = std::min<uint32_t>(CHUNK_SIZE, file_size - total_received);
+		if (!recvAll(client_socket, buffer.data(), bytes_to_read)) {
+			return;
+		}
+
+		file.write(buffer.data(), bytes_to_read);
+		total_received += bytes_to_read;
+	}
+	uint8_t status = 0;
+	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
 }
