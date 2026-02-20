@@ -135,3 +135,18 @@ void CommandHandler::handleDelete(SOCKET client_socket, std::string& file_name){
 		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
 	}
 }
+
+void CommandHandler::handleInfo(SOCKET client_socket, std::string& file_name){
+	std::filesystem::path file_path = file_directory + "/" + file_name;
+	if (!std::filesystem::exists(file_path) || !std::filesystem::is_regular_file(file_path)) {
+		uint8_t status = static_cast<uint8_t>(Status::FILE_NOT_FOUND);
+		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+	}
+	uint8_t status = static_cast<uint8_t>(Status::SUCCESS);
+	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES);
+
+	uint32_t file_size = static_cast<uint32_t>(std::filesystem::file_size(file_path));
+	uint32_t net_file_size = htonl(file_size);
+
+	sendAll(client_socket, reinterpret_cast<char*>(&net_file_size), sizeof(net_file_size));
+}
