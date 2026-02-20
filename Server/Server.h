@@ -1,6 +1,7 @@
 #pragma once
 #include <WinSock2.h>
 #include "RequestParser.h"
+#include "CommandHandler.h"
 #pragma comment(lib, "ws2_32.lib")
 
 class Server
@@ -13,9 +14,8 @@ private:
 	SOCKET client_socket;
 
 	RequestParser request_parser;
-	//CommandHandler
-	//ResponseBuilder
-	//main or some class for client-server app
+	CommandHandler command_handler;
+
 	void initialize();
 	void createSocket();
 	void bindSocket();

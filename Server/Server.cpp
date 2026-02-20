@@ -1,5 +1,4 @@
 #include "Server.h"
-#include "Server.h"
 #include <iostream>
 
 void Server::initialize() {
@@ -52,11 +51,41 @@ void Server::acceptConnection() {
 }
 
 void Server::processRequest() {
-	//buffer
-	//recv
-	//requestParser.parse(buffer)
-	//should buffer be bigger than request or i can read the request in parts?
+	uint32_t net_header_size = 0;
+	if (!recvAll(reinterpret_cast<char*>(&net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
+		return;
+	}
+	uint32_t header_size = ntohl(net_header_size);
+
+	std::vector<char> buffer(header_size);
+	if (!recvAll(buffer.data(), header_size)) {
+		return;
+	}
+	Request request = request_parser.parseRequest(buffer);
+	Command command = request.command;
+	std::string file_name = request.file_name;
+	uint32_t file_size = request.file_size;
+	switch (command) {
+		case Command::Get:
+			command_handler.handleGet(client_socket, file_name);
+			break;
+		case Command::List:
+			command_handler.handleList(client_socket);
+			break;
+		case Command::Put:
+			command_handler.handlePut(client_socket, file_name, file_size);
+			break;
+		case Command::Delete:
+			command_handler.handleDelete(client_socket, file_name);
+			break;
+		case Command::Info:
+			command_handler.handleInfo(client_socket, file_name);
+			break;
+		default:
+			command_handler.handleInvalid(client_socket);
+	}
 }
+
 
 void Server::cleanUp() {
 	closesocket(server_socket);
