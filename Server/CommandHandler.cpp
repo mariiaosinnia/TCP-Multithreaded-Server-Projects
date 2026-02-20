@@ -117,3 +117,21 @@ void CommandHandler::handlePut(SOCKET client_socket, std::string& file_name, uin
 	uint8_t status = 0;
 	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
 }
+
+void CommandHandler::handleDelete(SOCKET client_socket, std::string& file_name){
+	std::filesystem::path file_path = file_directory + "/" + file_name;
+	try {
+		if (std::filesystem::remove(file_path)) {
+			uint8_t status = 0;
+			send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+		}
+		else {
+			uint8_t status = 1;
+			send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+		}
+	}
+	catch (...) {
+		uint8_t status = 3;
+		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+	}
+}
