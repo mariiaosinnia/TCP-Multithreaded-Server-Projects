@@ -38,12 +38,12 @@ void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
 	std::ifstream file(file_name, std::ios::binary);
 
 	if (!file.is_open()) {
-		uint8_t status = 1;
-		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+		Status status = Status::FILE_NOT_FOUND;
+		sendStatus(client_socket, status);
 		return;
 	}
-	uint8_t status = 0;
-	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+	Status status = Status::SUCCESS;
+	sendStatus(client_socket, status);
 
 	file.seekg(0, std::ios::end);
 	uint32_t file_size = static_cast<uint32_t>(file.tellg());
@@ -81,13 +81,13 @@ void CommandHandler::handleList(SOCKET client_socket){
 		}
 	}
 	catch (...) {
-		uint8_t status = 3;
-		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+		Status status = Status::INTERNAL_ERROR;
+		sendStatus(client_socket, status);
 		return;
 	}
 
-	uint8_t status = 0;
-	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+	Status status = Status::SUCCESS;
+	sendStatus(client_socket, status);
 
 	uint32_t payload_size = static_cast<uint32_t>(result.length());
 	uint32_t net_payload_size = htonl(payload_size);
@@ -103,8 +103,8 @@ void CommandHandler::handleList(SOCKET client_socket){
 void CommandHandler::handlePut(SOCKET client_socket, std::string& file_name, uint32_t file_size) {
 	std::ofstream file(file_directory + "/" + file_name, std::ios::binary);
 	if (!file.is_open()) {
-		uint8_t status = 1;
-		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+		Status status = Status::FILE_NOT_FOUND;
+		sendStatus(client_socket, status);
 	}
 	const size_t CHUNK_SIZE = 1024;
 	std::vector<char> buffer(CHUNK_SIZE);
@@ -119,36 +119,36 @@ void CommandHandler::handlePut(SOCKET client_socket, std::string& file_name, uin
 		file.write(buffer.data(), bytes_to_read);
 		total_received += bytes_to_read;
 	}
-	uint8_t status = 0;
-	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+	Status status = Status::SUCCESS;
+	sendStatus(client_socket, status);
 }
 
 void CommandHandler::handleDelete(SOCKET client_socket, std::string& file_name){
 	std::filesystem::path file_path = file_directory + "/" + file_name;
 	try {
 		if (std::filesystem::remove(file_path)) {
-			uint8_t status = 0;
-			send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+			Status status = Status::SUCCESS;
+			sendStatus(client_socket, status);
 		}
 		else {
-			uint8_t status = 1;
-			send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+			Status status = Status::FILE_NOT_FOUND;
+			sendStatus(client_socket, status);
 		}
 	}
 	catch (...) {
-		uint8_t status = 3;
-		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+		Status status = Status::INTERNAL_ERROR;
+		sendStatus(client_socket, status);
 	}
 }
 
 void CommandHandler::handleInfo(SOCKET client_socket, std::string& file_name){
 	std::filesystem::path file_path = file_directory + "/" + file_name;
 	if (!std::filesystem::exists(file_path) || !std::filesystem::is_regular_file(file_path)) {
-		uint8_t status = static_cast<uint8_t>(Status::FILE_NOT_FOUND);
-		send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+		Status status = Status::FILE_NOT_FOUND;
+		sendStatus(client_socket, status);
 	}
-	uint8_t status = static_cast<uint8_t>(Status::SUCCESS);
-	send(client_socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);
+	Status status = Status::SUCCESS;
+	sendStatus(client_socket, status);
 
 	uint32_t file_size = static_cast<uint32_t>(std::filesystem::file_size(file_path));
 	uint32_t net_file_size = htonl(file_size);
