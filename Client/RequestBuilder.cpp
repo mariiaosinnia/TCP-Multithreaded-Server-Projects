@@ -1,5 +1,4 @@
 #include "RequestBuilder.h"
-#include "Protocol.h"
 #include <WinSock2.h>
 
 std::vector<char> RequestBuilder::serializeCommand(Command command)
@@ -32,13 +31,18 @@ std::vector<char> RequestBuilder::serializeFileSize(uint32_t file_size)
 
 std::vector<char> RequestBuilder::buildGetRequest(const std::string& file_name){
     std::vector<char> request_header;
-    request_header.push_back(static_cast<uint8_t>(Command::Get));
-    
-    uint16_t file_name_length = static_cast<uint16_t>(file_name.length());
-    uint16_t net_file_name_length = htons(file_name_length);
-    request_header.insert(request_header.end(), reinterpret_cast<char*>(&net_file_name_length),
-        reinterpret_cast<char*>(&net_file_name_length) + FILENAME_LENGTH_BYTES);
+    std::vector<char> command_serialized = serializeCommand(Command::Get);
+    request_header.insert(request_header.end(), command_serialized.begin(), command_serialized.end());
 
-    request_header.insert(request_header.end(), file_name.begin(), file_name.end());
+    std::vector<char> file_name_serialized = serializeFileName(file_name);
+    request_header.insert(request_header.end(), file_name_serialized.begin(), file_name_serialized.end());
     return request_header;
+}
+
+std::vector<char> RequestBuilder::buildPutRequest(const std::string& file_name, uint32_t file_size){
+
+}
+
+std::vector<char> RequestBuilder::buildDeleteRequest(const std::string& file_name){
+
 }
