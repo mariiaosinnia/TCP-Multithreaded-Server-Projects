@@ -34,7 +34,7 @@ void Client::connectToServer(){
 
 bool Client::sendRequest(std::vector<char>& buffer){
 	uint32_t header_size = static_cast<uint32_t>(buffer.size());
-	uint32_t net_header_size = htonl(net_header_size);
+	uint32_t net_header_size = htonl(header_size);
 	if (!sendAll(reinterpret_cast<char*>(net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
 		return false;
 	}
