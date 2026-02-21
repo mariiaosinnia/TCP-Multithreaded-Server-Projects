@@ -50,6 +50,18 @@ void Client::cleanUp() {
 	WSACleanup();
 }
 
+bool Client::recvAll(char* buffer, int size) {
+	int total_received = 0;
+	while (total_received < size) {
+		int bytes_received = recv(client_socket, buffer + total_received, size - total_received, 0);
+		if (bytes_received <= 0) {
+			return false;
+		}
+		total_received += bytes_received;
+	}
+	return true;
+}
+
 bool Client::sendAll(char* buffer, int size) {
 	int total_sent = 0;
 	while (total_sent < size) {
