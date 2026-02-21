@@ -35,3 +35,15 @@ void Client::cleanUp() {
 	closesocket(client_socket);
 	WSACleanup();
 }
+
+bool Client::sendAll(char* buffer, int size) {
+	int total_sent = 0;
+	while (total_sent < size) {
+		int bytes_sent = send(client_socket, buffer + total_sent, size - total_sent, 0);
+		if (bytes_sent <= 0) {
+			return false;
+		}
+		total_sent += bytes_sent;
+	}
+}
+
