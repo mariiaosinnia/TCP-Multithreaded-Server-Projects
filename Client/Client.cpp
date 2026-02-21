@@ -1,6 +1,7 @@
 #include "Client.h"
 #include <iostream>
 #include <Ws2tcpip.h>
+#include "Protocol.h"
 
 void Client::initialize() {
 	WSADATA wsa_data;
@@ -29,6 +30,19 @@ void Client::connectToServer(){
 		WSACleanup();
 		return;
 	}
+}
+
+bool Client::sendRequest(std::vector<char>& buffer){
+	uint32_t header_size = static_cast<uint32_t>(buffer.size());
+	uint32_t net_header_size = htonl(net_header_size);
+	if (!sendAll(reinterpret_cast<char*>(net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
+		return false;
+	}
+
+	if (!sendAll(buffer.data(), header_size)) {
+		return false;
+	}
+	return true;
 }
 
 void Client::cleanUp() {

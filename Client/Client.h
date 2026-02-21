@@ -1,5 +1,6 @@
 #pragma once
 #include <WinSock2.h>
+#include <vector>
 #pragma comment(lib, "ws2_32.lib")
 
 class Client{
@@ -12,12 +13,12 @@ private:
 	void initialize();
 	void createSocket();
 	void connectToServer();
-
+	bool sendRequest(std::vector<char>& buffer);
 	void cleanUp();
 
 	bool recvAll(char* buffer, int size);
 	bool sendAll(char* buffer, int size);
 public:
-
+	void get(std::vector<char>& file_name);
 };
 
