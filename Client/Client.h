@@ -18,6 +18,9 @@ private:
 
 	bool recvAll(char* buffer, int size);
 	bool sendAll(char* buffer, int size);
+
+	Status receiveStatus();
+	uint32_t receivePayloadLength();
 public:
 	void get(std::vector<char>& file_name);
 };

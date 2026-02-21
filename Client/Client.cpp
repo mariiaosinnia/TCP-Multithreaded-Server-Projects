@@ -61,3 +61,17 @@ bool Client::sendAll(char* buffer, int size) {
 	}
 }
 
+Status Client::receiveStatus()
+{
+	uint8_t byte;
+	recv(client_socket, reinterpret_cast<char*>(&byte), STATUS_BYTES, 0);
+	return static_cast<Status>(byte);
+}
+
+uint32_t Client::receivePayloadLength()
+{
+	uint32_t net_payload_length;
+	recvAll(reinterpret_cast<char*>(&net_payload_length), PAYLOAD_LENGTH_BYTES);
+	return ntohl(net_payload_length);
+}
+
