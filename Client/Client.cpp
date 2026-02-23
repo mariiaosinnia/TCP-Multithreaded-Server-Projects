@@ -152,3 +152,24 @@ void Client::list(){
 	std::cout << result << std::endl;
 }
 
+void Client::deleteFile(const std::string& file_name){
+	std::vector<char> header = request_builder.buildDeleteRequest(file_name);
+	if (!sendRequest(header)) {
+		std::cout << "Failed to send request" << std::endl;
+		return;
+	}
+
+	Status status = receiveStatus();
+	if (status == Status::FILE_NOT_FOUND) {
+		std::cout << "File not found" << std::endl;
+		return;
+	}
+	if (status == Status::INTERNAL_ERROR) {
+		std::cout << "Internal error occurred" << std::endl;
+		return;
+	}
+	if (status == Status::SUCCESS) {
+		std::cout << "File was successfully deleted" << std::endl;
+	}
+}
+

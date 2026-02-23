@@ -32,5 +32,6 @@ public:
 	void run();
 	void get(const std::string& file_name);
 	void list();
+	void deleteFile(const std::string& file_name);
 };
 
