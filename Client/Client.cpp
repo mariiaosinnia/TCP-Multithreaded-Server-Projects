@@ -1,7 +1,8 @@
 #include "Client.h"
 #include <iostream>
 #include <Ws2tcpip.h>
-#include "Protocol.h"
+#include <fstream>
+#include <algorithm>
 
 void Client::initialize() {
 	WSADATA wsa_data;

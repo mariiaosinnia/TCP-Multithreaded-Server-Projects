@@ -1,6 +1,9 @@
 #pragma once
 #include <WinSock2.h>
 #include <vector>
+#include "Protocol.h"
+#include "RequestBuilder.h"
+
 #pragma comment(lib, "ws2_32.lib")
 
 class Client{
@@ -9,6 +12,10 @@ private:
 	SOCKET client_socket;
 	PCWSTR server_ip = L"127.0.0.1";
 	sockaddr_in server_addr;
+
+	RequestBuilder request_builder;
+
+	std::string file_directory = "client_files";
 
 	void initialize();
 	void createSocket();
