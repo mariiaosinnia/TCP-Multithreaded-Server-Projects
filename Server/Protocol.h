@@ -10,6 +10,8 @@ const int FILE_SIZE_BYTES = 4;
 const int STATUS_BYTES = 1;
 const int PAYLOAD_LENGTH_BYTES = 4;
 
+const int CHUNK_SIZE = 1024;
+
 enum class Command : uint8_t {
 	Get,
 	List,
