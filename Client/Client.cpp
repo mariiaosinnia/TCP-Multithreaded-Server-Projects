@@ -88,3 +88,8 @@ uint32_t Client::receivePayloadLength()
 	return ntohl(net_payload_length);
 }
 
+void Client::run() {
+	initialize();
+	createSocket();
+	connectToServer();
+}

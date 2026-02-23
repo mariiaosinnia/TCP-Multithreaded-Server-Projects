@@ -22,6 +22,6 @@ private:
 	Status receiveStatus();
 	uint32_t receivePayloadLength();
 public:
-	void get(std::vector<char>& file_name);
+	void run();
 };
 
