@@ -110,10 +110,10 @@ void Server::run(){
 	createSocket();
 	bindSocket();
 	startListening();
+	acceptConnection();
 
 	while (true)
 	{
-		acceptConnection();
 		processRequest();
 	}
 
