@@ -104,3 +104,18 @@ bool Server::recvAll(char* buffer, int size) {
 	}
 	return true;
 }
+
+void Server::run(){
+	initialize();
+	createSocket();
+	bindSocket();
+	startListening();
+
+	while (true)
+	{
+		acceptConnection();
+		processRequest();
+	}
+
+	cleanUp();
+}
