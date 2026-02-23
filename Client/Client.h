@@ -23,5 +23,6 @@ private:
 	uint32_t receivePayloadLength();
 public:
 	void run();
+	void get(const std::string& file_name);
 };
 

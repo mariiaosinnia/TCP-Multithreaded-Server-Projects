@@ -93,3 +93,34 @@ void Client::run() {
 	createSocket();
 	connectToServer();
 }
+
+void Client::get(const std::string& file_name) {
+	std::vector<char> header = request_builder.buildGetRequest(file_name);
+
+	if (!sendRequest(header)) {
+		std::cout << "Failed to send request" << std::endl;
+		return;
+	}
+
+	Status status = receiveStatus();
+	if (status == Status::FILE_NOT_FOUND) {
+		std::cout << "File not found" << std::endl;
+		return;
+	}
+	std::ofstream file;
+	file.open(file_directory + "/" + file_name, std::ios::app);
+
+	uint32_t payload_size = receivePayloadLength();
+	uint32_t total_received = 0;
+	std::vector<char> buffer(CHUNK_SIZE);
+	while (total_received < payload_size) {
+		int to_read = std::min<int>(CHUNK_SIZE, payload_size - total_received);
+		if (!recvAll(buffer.data(), to_read)) {
+			return;
+		}
+
+		file.write(buffer.data(), to_read);
+		total_received += to_read;
+	}
+	std::cout << "File was successfully received" << std::endl;
+}
