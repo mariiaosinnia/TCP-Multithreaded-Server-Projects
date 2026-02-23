@@ -24,5 +24,6 @@ private:
 public:
 	void run();
 	void get(const std::string& file_name);
+	void list();
 };
 

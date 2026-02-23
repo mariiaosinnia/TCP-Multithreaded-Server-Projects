@@ -124,3 +124,30 @@ void Client::get(const std::string& file_name) {
 	}
 	std::cout << "File was successfully received" << std::endl;
 }
+
+void Client::list(){
+	std::vector<char> header = request_builder.buildListRequest();
+
+	if (!sendRequest(header)) {
+		std::cout << "Failed to send request" << std::endl;
+		return;
+	}
+
+	Status status = receiveStatus();
+	if (status != Status::SUCCESS) {
+		std::cout << "Server error\n";
+		return;
+	}
+
+	uint32_t payload_length = receivePayloadLength();
+	std::vector<char> buffer(payload_length);
+
+	if (!recvAll(buffer.data(), payload_length)) {
+		std::cout << "Failed to receive payload" << std::endl;
+		return;
+	}
+
+	std::string result(buffer.begin(), buffer.end());
+	std::cout << result << std::endl;
+}
+
