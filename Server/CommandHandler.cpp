@@ -54,7 +54,6 @@ void CommandHandler::handleGet(SOCKET client_socket, std::string& file_name){
 		return;
 	}
 
-	const size_t CHUNK_SIZE = 1024;
 	std::vector<char> buffer(CHUNK_SIZE);
 
 	while (file) {
@@ -107,7 +106,7 @@ void CommandHandler::handlePut(SOCKET client_socket, std::string& file_name, uin
 		sendStatus(client_socket, status);
 		return;
 	}
-	const size_t CHUNK_SIZE = 1024;
+
 	std::vector<char> buffer(CHUNK_SIZE);
 
 	int total_received = 0;
