@@ -34,5 +34,6 @@ public:
 	void list();
 	void put(const std::string& file_name);
 	void deleteFile(const std::string& file_name);
+	void info(const std::string& file_name);
 };
 

@@ -209,3 +209,21 @@ void Client::deleteFile(const std::string& file_name){
 	}
 }
 
+void Client::info(const std::string& file_name){
+	std::vector<char> header = request_builder.buildInfoRequest(file_name);
+
+	if (!sendRequest(header)) {
+		std::cout << "Failed to send request" << std::endl;
+		return;
+	}
+
+	Status status = receiveStatus();
+	if (status == Status::FILE_NOT_FOUND) {
+		std::cout << "File not found" << std::endl;
+		return;
+	}
+
+	uint32_t payload_size = receivePayloadLength();
+	std::cout << "File size: " << payload_size << "\n";
+}
+
