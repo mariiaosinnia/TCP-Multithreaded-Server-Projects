@@ -102,7 +102,7 @@ void CommandHandler::handleList(SOCKET client_socket){
 void CommandHandler::handlePut(SOCKET client_socket, std::string& file_name, uint32_t file_size) {
 	std::ofstream file(file_directory + "/" + file_name, std::ios::binary);
 	if (!file.is_open()) {
-		Status status = Status::FILE_NOT_FOUND;
+		Status status = Status::INTERNAL_ERROR;
 		sendStatus(client_socket, status);
 		return;
 	}
