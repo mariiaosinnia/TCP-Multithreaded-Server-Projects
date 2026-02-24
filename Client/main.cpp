@@ -1,0 +1,85 @@
+#include <iostream>
+#include <sstream>
+#include "Protocol.h"
+#include "Client.h"
+
+Command parseCommand(const std::string& str) {
+    if (str == "GET") {
+        return Command::Get;
+    }
+    else if (str == "LIST") {
+        return Command::List;
+    }
+    else if (str == "PUT") {
+        return Command::Put;
+    }
+    else if (str == "DELETE") {
+        return Command::Delete;
+    }
+    else if (str == "INFO") {
+        return Command::Info;
+    }
+    else {
+        return Command::Unknown;
+    }
+}
+
+int main() {
+    Client client;
+    client.run();
+
+    std::string line;
+    const int FILE_NAME_INDEX = 0;
+    while (true) {
+        std::cout << "> ";
+        std::getline(std::cin, line);
+        if (line.empty()) {
+            continue;
+        }
+
+        std::istringstream iss(line);
+        std::string command;
+        iss >> command;
+        std::vector<std::string> args;
+        std::string arg;
+        while (iss >> arg) {
+            args.push_back(arg);
+        }
+
+        Command cmd = parseCommand(command);
+        switch (cmd) {
+            case Command::Get:
+                if (args.empty()) {
+                    std::cout << "Not enough arguments" << std::endl;
+                    break;
+                }
+                client.get(args[FILE_NAME_INDEX]);
+                break;
+            case Command::List:
+                client.list();
+                break;
+            case Command::Put:
+                if (args.empty()) {
+                    std::cout << "Not enough arguments" << std::endl;
+                    break;
+                }
+                client.put(args[FILE_NAME_INDEX]);
+                break;
+            case Command::Delete:
+                if (args.empty()) {
+                    std::cout << "Not enough arguments" << std::endl;
+                    break;
+                }
+                client.deleteFile(args[FILE_NAME_INDEX]);
+                break;
+            case Command::Info:
+                if (args.empty()) {
+                    std::cout << "Not enough arguments" << std::endl;
+                    break;
+                }
+                client.info(args[FILE_NAME_INDEX]);
+                break;
+        }
+    }
+	return 0;
+}
