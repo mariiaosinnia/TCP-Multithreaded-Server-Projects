@@ -152,6 +152,42 @@ void Client::list(){
 	std::cout << result << std::endl;
 }
 
+void Client::put(const std::string& file_name){
+	std::ifstream file(file_directory + "/" + file_name, std::ios::binary);
+	if (!file.is_open()) {
+		std::cout << "File not found" << std::endl;
+		return;
+	}
+	file.seekg(0, std::ios::end);
+	uint32_t file_size = static_cast<uint32_t>(file.tellg());
+	file.seekg(0, std::ios::beg);
+
+	std::vector<char> header = request_builder.buildPutRequest(file_name, file_size);
+	if (!sendRequest(header)) {
+		std::cout << "Failed to send request" << std::endl;
+		return;
+	}
+
+	std::vector<char> buffer(CHUNK_SIZE);
+	int total_sent = 0;
+	while (total_sent < file_size) {
+		int to_sent = std::min<int>(CHUNK_SIZE, file_size - total_sent);
+		file.read(buffer.data(), to_sent);
+		if (!sendAll(buffer.data(), to_sent)) {
+			return;
+		}
+		total_sent += to_sent;
+	}
+
+	Status status = receiveStatus();
+	if (status == Status::SUCCESS) {
+		std::cout << "File was successfully uploaded to the server" << std::endl;
+	}
+	else {
+		std::cout << "Upload failed" << std::endl;
+	}
+}
+
 void Client::deleteFile(const std::string& file_name){
 	std::vector<char> header = request_builder.buildDeleteRequest(file_name);
 	if (!sendRequest(header)) {
