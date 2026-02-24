@@ -23,7 +23,7 @@ std::vector<char> RequestBuilder::serializeFileName(const std::string& file_name
 std::vector<char> RequestBuilder::serializeFileSize(uint32_t file_size)
 {
     std::vector<char> file_size_buf;
-    uint32_t net_file_size= htons(file_size);
+    uint32_t net_file_size= htonl(file_size);
     file_size_buf.insert(file_size_buf.end(), reinterpret_cast<char*>(&net_file_size),
         reinterpret_cast<char*>(&net_file_size) + FILE_SIZE_BYTES);
     return file_size_buf;
