@@ -26,6 +26,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="CommandHandler.cpp" />
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="RequestParser.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
