@@ -79,6 +79,8 @@ int main() {
                 }
                 client.info(args[FILE_NAME_INDEX]);
                 break;
+            case Command::Unknown:
+                std::cout << "Unknown command" << std::endl;
         }
     }
 	return 0;
