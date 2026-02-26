@@ -9,3 +9,5 @@ Release/
 *.obj
 *.exe
 *.pdb
+bin/
+obj/
