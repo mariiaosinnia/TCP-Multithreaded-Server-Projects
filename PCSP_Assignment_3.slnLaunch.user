@@ -7,7 +7,7 @@
         "Action": "Start"
       },
       {
-        "Path": "Client\\Client.vcxproj",
+        "Path": "Client_2\\Client_2.csproj",
         "Action": "Start"
       }
     ]
