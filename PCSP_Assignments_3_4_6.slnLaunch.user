@@ -3,11 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "Server\\Server.vcxproj",
+        "Path": "Assignment_3\\Server\\Server.vcxproj",
         "Action": "Start"
       },
       {
-        "Path": "Client_2\\Client_2.csproj",
+        "Path": "Assignment_3\\Client\\Client.vcxproj",
         "Action": "Start"
       }
     ]
