@@ -9,6 +9,8 @@ Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Client", "Client\Client.vcx
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Client_2", "Client_2\Client_2.csproj", "{E2AEB200-56AD-4D02-9739-FEAAA87B2B0F}"
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Assignment_3", "Assignment_3", "{02EA681E-C7D8-13C7-8484-4AC65E1B71E8}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -58,6 +60,11 @@ Global
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{089C4B98-356C-42FF-A0E4-9EAD4BCEDFD9} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{93CB3305-3F7F-45DF-85C6-573BB35CFC50} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
+		{E2AEB200-56AD-4D02-9739-FEAAA87B2B0F} = {02EA681E-C7D8-13C7-8484-4AC65E1B71E8}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {8FC28D7D-57F2-4456-B7E0-AD1F73AD0A12}
