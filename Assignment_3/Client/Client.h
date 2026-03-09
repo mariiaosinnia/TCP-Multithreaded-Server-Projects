@@ -23,9 +23,6 @@ private:
 	bool sendRequest(std::vector<char>& buffer);
 	void cleanUp();
 
-	bool recvAll(char* buffer, int size);
-	bool sendAll(char* buffer, int size);
-
 	Status receiveStatus();
 	uint32_t receivePayloadLength();
 public:

@@ -52,13 +52,13 @@ void Server::acceptConnection() {
 
 void Server::processRequest() {
 	uint32_t net_header_size = 0;
-	if (!recvAll(reinterpret_cast<char*>(&net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
+	if (!recvAll(client_socket, reinterpret_cast<char*>(&net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
 		return;
 	}
 	uint32_t header_size = ntohl(net_header_size);
 
 	std::vector<char> buffer(header_size);
-	if (!recvAll(buffer.data(), header_size)) {
+	if (!recvAll(client_socket, buffer.data(), header_size)) {
 		return;
 	}
 	Request request = request_parser.parseRequest(buffer);
@@ -91,18 +91,6 @@ void Server::cleanUp() {
 	closesocket(server_socket);
 	closesocket(client_socket);
 	WSACleanup();
-}
-
-bool Server::recvAll(char* buffer, int size) {
-	int total_received = 0;
-	while (total_received < size) {
-		int bytes_received = recv(client_socket, buffer + total_received, size - total_received, 0);
-		if (bytes_received <= 0) {
-			return false;
-		}
-		total_received += bytes_received;
-	}
-	return true;
 }
 
 void Server::run(){

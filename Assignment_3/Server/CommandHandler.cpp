@@ -5,30 +5,6 @@
 #include <string>
 #include <algorithm>
 
-bool CommandHandler::sendAll(SOCKET socket, char* data, int size){
-	int total_sent = 0;
-	while (total_sent < size) {
-		int sent = send(socket, data + total_sent, size - total_sent, 0);
-		if (sent <= 0){
-			return false;
-		}
-		total_sent += sent;
-	}
-	return true;
-}
-
-bool CommandHandler::recvAll(SOCKET socket, char* buffer, int size) {
-	int total_received = 0;
-	while (total_received < size) {
-		int bytes_received = recv(socket, buffer + total_received, size - total_received, 0);
-		if (bytes_received <= 0) {
-			return false;
-		}
-		total_received += bytes_received;
-	}
-	return true;
-}
-
 void CommandHandler::sendStatus(SOCKET socket, Status status_enum){
 	uint8_t status = static_cast<uint8_t>(status_enum);
 	send(socket, reinterpret_cast<char*>(&status), STATUS_BYTES, 0);

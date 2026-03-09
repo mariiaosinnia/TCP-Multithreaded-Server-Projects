@@ -2,6 +2,7 @@
 #include <WinSock2.h>
 #include "RequestParser.h"
 #include "CommandHandler.h"
+#include "Protocol.h"
 #pragma comment(lib, "ws2_32.lib")
 
 class Server
@@ -24,7 +25,6 @@ private:
 	void processRequest();
 	void cleanUp();
 
-	bool recvAll(char* buffer, int size);
 public:
 	void run();
 };

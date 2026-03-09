@@ -21,9 +21,6 @@
     <ClInclude Include="RequestParser.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="CommandHandler.h">
       <Filter>Header Files</Filter>
     </ClInclude>

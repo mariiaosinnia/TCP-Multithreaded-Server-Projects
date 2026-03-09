@@ -18,9 +18,6 @@
     <ClInclude Include="Client.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Protocol.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
     <ClInclude Include="RequestBuilder.h">
       <Filter>Header Files</Filter>
     </ClInclude>

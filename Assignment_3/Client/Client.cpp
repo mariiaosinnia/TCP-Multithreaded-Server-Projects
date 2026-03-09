@@ -36,11 +36,11 @@ void Client::connectToServer(){
 bool Client::sendRequest(std::vector<char>& buffer){
 	uint32_t header_size = static_cast<uint32_t>(buffer.size());
 	uint32_t net_header_size = htonl(header_size);
-	if (!sendAll(reinterpret_cast<char*>(&net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
+	if (!sendAll(client_socket, reinterpret_cast<char*>(&net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
 		return false;
 	}
 
-	if (!sendAll(buffer.data(), header_size)) {
+	if (!sendAll(client_socket, buffer.data(), header_size)) {
 		return false;
 	}
 	return true;
@@ -49,30 +49,6 @@ bool Client::sendRequest(std::vector<char>& buffer){
 void Client::cleanUp() {
 	closesocket(client_socket);
 	WSACleanup();
-}
-
-bool Client::recvAll(char* buffer, int size) {
-	int total_received = 0;
-	while (total_received < size) {
-		int bytes_received = recv(client_socket, buffer + total_received, size - total_received, 0);
-		if (bytes_received <= 0) {
-			return false;
-		}
-		total_received += bytes_received;
-	}
-	return true;
-}
-
-bool Client::sendAll(char* buffer, int size) {
-	int total_sent = 0;
-	while (total_sent < size) {
-		int bytes_sent = send(client_socket, buffer + total_sent, size - total_sent, 0);
-		if (bytes_sent <= 0) {
-			return false;
-		}
-		total_sent += bytes_sent;
-	}
-	return true;
 }
 
 Status Client::receiveStatus()
@@ -85,7 +61,7 @@ Status Client::receiveStatus()
 uint32_t Client::receivePayloadLength()
 {
 	uint32_t net_payload_length;
-	recvAll(reinterpret_cast<char*>(&net_payload_length), PAYLOAD_LENGTH_BYTES);
+	recvAll(client_socket, reinterpret_cast<char*>(&net_payload_length), PAYLOAD_LENGTH_BYTES);
 	return ntohl(net_payload_length);
 }
 
@@ -116,7 +92,7 @@ void Client::get(const std::string& file_name) {
 	std::vector<char> buffer(CHUNK_SIZE);
 	while (total_received < payload_size) {
 		int to_read = std::min<int>(CHUNK_SIZE, payload_size - total_received);
-		if (!recvAll(buffer.data(), to_read)) {
+		if (!recvAll(client_socket, buffer.data(), to_read)) {
 			return;
 		}
 
@@ -143,7 +119,7 @@ void Client::list(){
 	uint32_t payload_length = receivePayloadLength();
 	std::vector<char> buffer(payload_length);
 
-	if (!recvAll(buffer.data(), payload_length)) {
+	if (!recvAll(client_socket, buffer.data(), payload_length)) {
 		std::cout << "Failed to receive payload" << std::endl;
 		return;
 	}
@@ -173,7 +149,7 @@ void Client::put(const std::string& file_name){
 	while (total_sent < file_size) {
 		int to_sent = std::min<int>(CHUNK_SIZE, file_size - total_sent);
 		file.read(buffer.data(), to_sent);
-		if (!sendAll(buffer.data(), to_sent)) {
+		if (!sendAll(client_socket, buffer.data(), to_sent)) {
 			return;
 		}
 		total_sent += to_sent;

@@ -5,8 +5,6 @@
 
 class CommandHandler{
 private:
-	bool sendAll(SOCKET socket, char* data, int size);
-	bool recvAll(SOCKET socket, char* buffer, int size);
 	void sendStatus(SOCKET socket, Status status_enum);
 	std::string file_directory = "server_files";
 public:
