@@ -6,6 +6,7 @@
 #pragma comment(lib, "ws2_32.lib")
 
 const int REQUEST_HEADER_SIZE_BYTES = 4;
+const int CLIENT_NAME_LENGTH_BYTES = 2;
 const int COMMAND_BYTES = 1;
 const int FILENAME_LENGTH_BYTES = 2;
 const int FILE_SIZE_BYTES = 4;
@@ -33,31 +34,11 @@ enum class Status : uint8_t {
 
 
 struct Request {
+	std::string client_name;
 	Command command;
 	std::string file_name = "";
 	uint32_t file_size = 0;
 };
 
-bool recvAll(SOCKET socket, char* buffer, int size) {
-	int total_received = 0;
-	while (total_received < size) {
-		int bytes_received = recv(socket, buffer + total_received, size - total_received, 0);
-		if (bytes_received <= 0) {
-			return false;
-		}
-		total_received += bytes_received;
-	}
-	return true;
-}
-
-bool sendAll(SOCKET socket, const char* buffer, int size) {
-	int total_sent = 0;
-	while (total_sent < size) {
-		int bytes_sent = send(socket, buffer + total_sent, size - total_sent, 0);
-		if (bytes_sent <= 0) {
-			return false;
-		}
-		total_sent += bytes_sent;
-	}
-	return true;
-}
+bool recvAll(SOCKET socket, char* buffer, int size);
+bool sendAll(SOCKET socket, const char* buffer, int size);

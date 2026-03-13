@@ -3,7 +3,11 @@
     "Name": "New Profile",
     "Projects": [
       {
-        "Path": "Assignment_3\\Server\\Server.vcxproj",
+        "Path": "Assignment_4\\ThreadedServer\\ThreadedServer.vcxproj",
+        "Action": "Start"
+      },
+      {
+        "Path": "Assignment_4\\ThreadedClient\\ThreadedClient.vcxproj",
         "Action": "Start"
       },
       {
