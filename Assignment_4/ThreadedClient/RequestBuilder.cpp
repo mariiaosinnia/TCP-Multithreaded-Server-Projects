@@ -42,6 +42,8 @@ std::vector<char> RequestBuilder::serializeFileSize(uint32_t file_size)
 
 std::vector<char> RequestBuilder::buildGetRequest(const std::string& client_name, const std::string& file_name) {
     std::vector<char> request_header;
+    
+    request_header.push_back(has_name_byte);
 
     std::vector<char> client_name_serialized = serializeClientName(client_name);
     request_header.insert(request_header.end(), client_name_serialized.begin(), client_name_serialized.end());
@@ -58,6 +60,8 @@ std::vector<char> RequestBuilder::buildListRequest(const std::string& client_nam
 {
     std::vector<char> request_header;
 
+    request_header.push_back(has_name_byte);
+
     std::vector<char> client_name_serialized = serializeClientName(client_name);
     request_header.insert(request_header.end(), client_name_serialized.begin(), client_name_serialized.end());
 
@@ -70,6 +74,8 @@ std::vector<char> RequestBuilder::buildListRequest(const std::string& client_nam
 std::vector<char> RequestBuilder::buildPutRequest(const std::string& client_name, const std::string& file_name, 
     uint32_t file_size) {
     std::vector<char> request_header;
+
+    request_header.push_back(has_name_byte);
 
     std::vector<char> client_name_serialized = serializeClientName(client_name);
     request_header.insert(request_header.end(), client_name_serialized.begin(), client_name_serialized.end());
@@ -88,6 +94,8 @@ std::vector<char> RequestBuilder::buildPutRequest(const std::string& client_name
 std::vector<char> RequestBuilder::buildDeleteRequest(const std::string& client_name, const std::string& file_name) {
     std::vector<char> request_header;
 
+    request_header.push_back(has_name_byte);
+
     std::vector<char> client_name_serialized = serializeClientName(client_name);
     request_header.insert(request_header.end(), client_name_serialized.begin(), client_name_serialized.end());
 
@@ -102,6 +110,8 @@ std::vector<char> RequestBuilder::buildDeleteRequest(const std::string& client_n
 std::vector<char> RequestBuilder::buildInfoRequest(const std::string& client_name, const std::string& file_name)
 {
     std::vector<char> request_header;
+
+    request_header.push_back(has_name_byte);
 
     std::vector<char> client_name_serialized = serializeClientName(client_name);
     request_header.insert(request_header.end(), client_name_serialized.begin(), client_name_serialized.end());

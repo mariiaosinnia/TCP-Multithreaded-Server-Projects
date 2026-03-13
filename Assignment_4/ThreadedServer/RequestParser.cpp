@@ -5,13 +5,21 @@ Request RequestParser::parseRequest(const std::vector<char>& buffer) {
 	Request request;
 	size_t offset = 0;
 	
-	uint16_t client_name_length = 0;
-	memcpy(&client_name_length, buffer.data() + offset, CLIENT_NAME_LENGTH_BYTES);
-	client_name_length = ntohs(client_name_length);
-	offset += CLIENT_NAME_LENGTH_BYTES;
+	uint8_t possible_flag = buffer[offset];
 
-	request.client_name = std::string(buffer.data() + offset, client_name_length);
-	offset += client_name_length;
+	if (possible_flag == has_name) {
+		offset += 1;
+		uint16_t client_name_length = 0;
+		memcpy(&client_name_length, buffer.data() + offset, CLIENT_NAME_LENGTH_BYTES);
+		client_name_length = ntohs(client_name_length);
+		offset += CLIENT_NAME_LENGTH_BYTES;
+
+		request.client_name = std::string(buffer.data() + offset, client_name_length);
+		offset += client_name_length;
+	}
+	else {
+		request.client_name = defaulte_dir;
+	}
 
 	request.command = static_cast<Command>(buffer[offset]);
 	offset += COMMAND_BYTES;
