@@ -9,6 +9,10 @@
       {
         "Path": "Assignment_4\\ThreadedClient\\ThreadedClient.vcxproj",
         "Action": "Start"
+      },
+      {
+        "Path": "Assignment_3\\Client\\Client.vcxproj",
+        "Action": "Start"
       }
     ]
   }

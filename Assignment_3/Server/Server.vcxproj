@@ -29,6 +29,11 @@
     <ClCompile Include="RequestParser.cpp" />
     <ClCompile Include="Server.cpp" />
   </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.vcxproj">
+      <Project>{02d0b325-9db0-420f-ae11-3628b5903cb0}</Project>
+    </ProjectReference>
+  </ItemGroup>
   <PropertyGroup Label="Globals">
     <VCProjectVersion>17.0</VCProjectVersion>
     <Keyword>Win32Proj</Keyword>

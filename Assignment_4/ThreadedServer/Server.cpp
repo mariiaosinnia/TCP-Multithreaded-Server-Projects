@@ -32,6 +32,7 @@ void Server::bindSocket() {
 
 void Server::startListening() {
 	thread_pool.initialize(3);
+	is_running = true;
 
 	if (listen(server_socket, SOMAXCONN) == SOCKET_ERROR) {
 		std::cerr << "Listen failed with error: " << WSAGetLastError() << std::endl;
@@ -45,11 +46,14 @@ void Server::startListening() {
 void Server::acceptConnection() {
 	SOCKET client_socket = accept(server_socket, nullptr, nullptr);
 	if (client_socket == SOCKET_ERROR) {
+		if (!is_running) {
+			return;
+		}
 		std::cerr << "Accept failed with error: " << WSAGetLastError() << std::endl;
-		closesocket(server_socket);
-		WSACleanup();
 		return;
 	}
+
+	total_clients++;
 
 	thread_pool.add_task([client_socket, this]() {
 		processRequest(client_socket);
@@ -58,16 +62,16 @@ void Server::acceptConnection() {
 }
 
 void Server::processRequest(SOCKET client_socket) {
-	while (true) {
+	while (is_running) {
 		uint32_t net_header_size = 0;
 		if (!recvAll(client_socket, reinterpret_cast<char*>(&net_header_size), REQUEST_HEADER_SIZE_BYTES)) {
-			return;
+			break;
 		}
 		uint32_t header_size = ntohl(net_header_size);
 
 		std::vector<char> buffer(header_size);
 		if (!recvAll(client_socket, buffer.data(), header_size)) {
-			return;
+			break;
 		}
 		Request request = request_parser.parseRequest(buffer);
 		std::string client_name = request.client_name;
@@ -77,32 +81,70 @@ void Server::processRequest(SOCKET client_socket) {
 
 		switch (command) {
 		case Command::Get:
+			get_requests++;
 			command_handler.handleGet(client_socket, client_name, file_name);
 			break;
 		case Command::List:
+			list_requests++;
 			command_handler.handleList(client_socket, client_name);
 			break;
 		case Command::Put:
+			put_requests++;
 			command_handler.handlePut(client_socket, client_name, file_name, file_size);
 			break;
 		case Command::Delete:
+			delete_requests++;
 			command_handler.handleDelete(client_socket, client_name, file_name);
 			break;
 		case Command::Info:
+			info_requests++;
 			command_handler.handleInfo(client_socket, client_name, file_name);
 			break;
 		default:
 			command_handler.handleInvalid(client_socket);
 		}
+
+		total_requests++;
 	}
 
 	closesocket(client_socket);
 }
 
+void Server::console_loop() {
+	std::string command;
+
+	while (is_running) {
+		std::getline(std::cin, command);
+
+		if (command == "exit") {
+			std::cout << "Shutting down server..." << std::endl;
+
+			is_running = false;
+			closesocket(server_socket);
+			break;
+		}
+	}
+}
+
 
 void Server::cleanUp() {
+	thread_pool.terminate();
 	closesocket(server_socket);
 	WSACleanup();
+	std::cout << "Server stopped" << std::endl;
+
+	std::cout << "\n=== SERVER STATISTICS ===\n";
+
+	std::cout << "Clients connected: " << total_clients << std::endl;
+	std::cout << "Total requests: " << total_requests << std::endl;
+
+	std::cout << "GET: " << get_requests << std::endl;
+	std::cout << "PUT: " << put_requests << std::endl;
+	std::cout << "LIST: " << list_requests << std::endl;
+	std::cout << "DELETE: " << delete_requests << std::endl;
+	std::cout << "INFO: " << info_requests << std::endl;
+
+	std::cout << "====================\n";
 }
 
 void Server::run() {
@@ -111,10 +153,14 @@ void Server::run() {
 	bindSocket();
 	startListening();
 
-	while (true)
+	std::thread console_thread(&Server::console_loop, this);
+
+	while (is_running)
 	{
 		acceptConnection();
 	}
+
+	console_thread.join();
 
 	cleanUp();
 }
