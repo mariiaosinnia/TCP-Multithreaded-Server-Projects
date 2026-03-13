@@ -30,31 +30,3 @@ public:
 	void run();
 };
 
-struct SocketRAII {
-	SOCKET socket;
-	SocketRAII(SOCKET sock) : socket(sock){}
-	~SocketRAII() {
-		if (socket != INVALID_SOCKET) {
-			closesocket(socket);
-		}
-	}
-
-	SocketRAII(const SocketRAII&) = delete;
-	SocketRAII& operator=(const SocketRAII&) = delete;
-
-	SocketRAII(SocketRAII&& other) noexcept : socket(other.socket) {
-		other.socket = INVALID_SOCKET;
-	}
-
-	SocketRAII& operator=(SocketRAII&& other) noexcept {
-		if (this != &other) {
-			if (socket != INVALID_SOCKET) {
-				closesocket(socket);
-			}
-			socket = other.socket;
-			other.socket = INVALID_SOCKET;
-		}
-		return *this;
-	}
-};
-
