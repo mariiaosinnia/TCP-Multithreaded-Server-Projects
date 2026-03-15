@@ -1,10 +1,10 @@
 # PCSP Assignments 3 & 4
 
 ## Overview
-This repository contains university assignments from the *Principles of Computer Systems Programming (PCSP)* course. It includes two main projects:
+This repository contains university assignments from the *Parallel and Client-Server Programming (PCSP)* course. It includes two main projects:
 
 1. **Assignment 3 – TCP Client & Server**  
-   A basic client-server application implemented in C++ using TCP sockets. The client can send requests to the server, and the server responds with appropriate messages or file contents.
+   A basic client-server application implemented in C++ and C# using TCP sockets. The client can send requests to the server, and the server responds with appropriate messages or file contents.
 
 2. **Assignment 4 – Multithreaded Server with Thread Pool**  
    An extension of Assignment 3 that supports multiple concurrent clients using a **thread pool** architecture. The server maintains compatibility with clients from Assignment 3 while efficiently handling multiple simultaneous connections.
