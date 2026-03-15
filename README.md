@@ -12,14 +12,16 @@ This repository contains university assignments from the *Parallel and Client-Se
 
 ## Project Structure
 
-   `PCSP_Assignments_3_4_6/
+   ```
+   PCSP_Assignments_3_4_6/
    │
    ├─ Assignment_3/ # TCP client-server project
    ├─ Assignment_4/ # Multithreaded server with thread pool
    ├─ Shared/ # Shared code for both assignments
    ├─ x64/
    ├─ PCSP_Assignments_3_4_6.sln
-   └─ .gitignore`
+   └─ .gitignore
+   ```
 
 
 ## Features
